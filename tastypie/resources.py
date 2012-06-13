@@ -2253,7 +2253,7 @@ class BaseModelResource(Resource):
                 raise NotFound("A model instance matching the provided arguments could not be found.")
 
         bundle = self.medium_hydrate(bundle)
-        self.is_valid(bundle, request)
+        self.is_valid(bundle)
 
         if bundle.errors and not skip_errors:
             self.error_response(bundle.errors, request)
