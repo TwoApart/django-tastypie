@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 import datetime
 import re
+from StringIO import StringIO
 import django
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
