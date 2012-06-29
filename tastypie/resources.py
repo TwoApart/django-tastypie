@@ -1589,6 +1589,7 @@ class Resource(object):
                     # so this is a create-by-PUT equivalent.
                     data = self.alter_deserialized_detail_data(request, data)
                     bundle = self.build_bundle(data=dict_strip_unicode_keys(data), request=request)
+
                     self.obj_create(bundle=bundle)
             else:
                 # There's no resource URI, so this is a create call just
