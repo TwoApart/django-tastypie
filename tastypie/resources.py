@@ -928,7 +928,10 @@ class Resource(six.with_metaclass(DeclarativeMetaclass)):
                 # unmodified. It's up to the user's code to handle this.
                 # The ``ModelResource`` provides a working baseline
                 # in this regard.
-                bundle.data[field_name] = field_object.hydrate_m2m(bundle)
+
+                # Partial PUTs may not have M2M provided
+                if field_name in bundle.data:
+                    bundle.data[field_name] = field_object.hydrate_m2m(bundle)
 
         for field_name, field_object in self.fields.items():
             if not getattr(field_object, 'is_m2m', False):
@@ -936,7 +939,7 @@ class Resource(six.with_metaclass(DeclarativeMetaclass)):
 
             method = getattr(self, "hydrate_%s" % field_name, None)
 
-            if method:
+            if method and field_name in bundle.data:
                 method(bundle)
 
         return bundle
@@ -2390,8 +2393,7 @@ class BaseModelResource(Resource):
 
                 # Clear it out, just to be safe.
                 related_mngr.clear()
-
-            related_objs = []
+                    related_objs = []
 
             for related_bundle in bundle.data[field_name]:
                 related_resource = field_object.get_related_resource(bundle.obj)
