@@ -592,4 +592,3 @@ class RelatedSaveCallsTest(TestCase):
         tag = Tag.objects.all()[0]
         taggable_tag = tag.taggabletags.all()[0]
         self.assertEqual(taggable_tag.extra, 1234)
-        
