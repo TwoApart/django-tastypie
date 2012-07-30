@@ -2491,7 +2491,7 @@ class ModelResource(Resource):
                         related_resource.save(updated_related_bundle)
                     related_objs.append(updated_related_bundle.obj)
 
-                    related_mngr.add(*related_objs)
+                related_mngr.add(*related_objs)
 
     def detail_uri_kwargs(self, bundle_or_obj):
         """
