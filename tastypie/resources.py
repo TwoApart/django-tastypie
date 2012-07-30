@@ -2446,39 +2446,50 @@ class BaseModelResource(Resource):
             if not related_mngr:
                 continue
 
-            if hasattr(related_mngr, 'clear'):
-                # FIXME: Dupe the original bundle, copy in the new object &
-                #        check the perms on that (using the related resource)?
+            # ManyToManyField with a through table don't have add method by default
+            # If we don't have an add method, better to do nothing
+            # Otherwise we would clear the relation screwing it completely.
+            if hasattr(related_mngr, 'add'):
+                # Partial PUTs may not have M2M provided
+                # If no data is provided don't do anything, otherwise we would reset the related relation
+                if hasattr(related_mngr, 'clear'):
+                    # FIXME: Dupe the original bundle, copy in the new object &
+                    #        check the perms on that (using the related resource)?
 
-                # Clear it out, just to be safe.
-                related_mngr.clear()
-                    related_objs = []
+                    # Clear it out, just to be safe.
+                    related_mngr.clear()
 
-            for related_bundle in bundle.data[field_name]:
-                related_resource = field_object.get_related_resource(bundle.obj)
+                related_objs = []
 
-                # Before we build the bundle & try saving it, let's make sure we
-                # haven't already saved it.
-                obj_id = self.create_identifier(related_bundle.obj)
-
-                if obj_id in bundle.objects_saved:
-                    # It's already been saved. We're done here.
+                if field_name in bundle.data:
                     continue
 
-                # Only build & save if there's data, not just a URI.
-                updated_related_bundle = related_resource.build_bundle(
-                    obj=related_bundle.obj,
-                    data=related_bundle.data,
-                    request=bundle.request,
-                    objects_saved=bundle.objects_saved
-                )
+                for related_bundle in bundle.data[field_name]:
+                    related_resource = field_object.get_related_resource(bundle.obj)
 
-                #Only save related models if they're newly added.
-                if updated_related_bundle.obj._state.adding:
-                    related_resource.save(updated_related_bundle)
-                related_objs.append(updated_related_bundle.obj)
+                    # Before we build the bundle & try saving it, let's make sure we
+                    # haven't already saved it.
+                    obj_id = self.create_identifier(related_bundle.obj)
 
-            related_mngr.add(*related_objs)
+                    if obj_id in bundle.objects_saved:
+                        # It's already been saved. We're done here.
+                        continue
+
+                    # Only build & save if there's data, not just a URI.
+                    updated_related_bundle = related_resource.build_bundle(
+                        obj=related_bundle.obj,
+                        data=related_bundle.data,
+                        request=bundle.request,
+                        objects_saved=bundle.objects_saved
+                    )
+
+                    #Only save related models if they're newly added.
+                    if updated_related_bundle.obj._state.adding:
+                        related_resource.save(updated_related_bundle)
+                    related_objs.append(updated_related_bundle.obj)
+
+
+                related_mngr.add(*related_objs)
 
     def detail_uri_kwargs(self, bundle_or_obj):
         """
