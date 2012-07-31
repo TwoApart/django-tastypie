@@ -491,7 +491,7 @@ class NestedRelatedResourceTest(TestCase):
 class RelatedSaveCallsTest(TestCase):
     urls = 'related_resource.api.urls'
 
-    def test_one_query_for_post_list(self):
+    def test_one_query_for_fk_post_list(self):
         """
         Posting a new detail with no related objects
         should require one query to save the object
@@ -509,7 +509,7 @@ class RelatedSaveCallsTest(TestCase):
             resp = resource.post_list(request)
 
 
-    def test_two_queries_for_post_list(self):
+    def test_two_queries_for_fk_post_list(self):
         """
         Posting a new detail with one related object, referenced via its
         ``resource_uri`` should require two queries: one to save the
