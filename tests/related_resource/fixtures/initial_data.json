@@ -39,10 +39,6 @@
             "name": "coffee"
         }, 
         "model": "related_resource.label", 
-<<<<<<< HEAD
         "pk": 1 
-=======
-        "pk": 1
->>>>>>> Test for m2m-save reduction.
     }
 ]
