@@ -707,6 +707,7 @@ class Resource(object):
         Given a bundle with an object instance, extract the information from it
         to populate the resource.
         """
+        # clear data that will be returned
         bundle.data = {}
         # Dehydrate each field.
         for field_name, field_object in self.fields.items():
