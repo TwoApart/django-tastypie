@@ -846,6 +846,9 @@ class Resource(object):
         """
         use_in = ['all', 'list' if for_list else 'detail']
 
+        # clear data that will be returned
+        bundle.data = {}
+
         # Dehydrate each field.
         for field_name, field_object in self.fields.items():
             # If it's not for use in this mode, skip
