@@ -815,7 +815,6 @@ class Resource(six.with_metaclass(DeclarativeMetaclass)):
 
         # clear data that will be returned
         bundle.data = {}
-
         # Dehydrate each field.
         for field_name, field_object in self.fields.items():
             # If it's not for use in this mode, skip
