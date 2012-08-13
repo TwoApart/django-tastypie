@@ -1950,6 +1950,8 @@ class BaseModelResource(Resource):
 
         model_fields = map(lambda x:x.name, self._meta.queryset.model._meta.fields)
 
+        model_fields = map(lambda x:x.name, self._meta.queryset.model._meta.fields)
+
         for filter_expr, value in filters.items():
             filter_bits = filter_expr.split(LOOKUP_SEP)
             field_name = filter_bits.pop(0)
