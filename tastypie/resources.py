@@ -435,8 +435,10 @@ class Resource(object):
         throttling, method lookup) surrounding most CRUD interactions.
         """
         allowed_methods = getattr(self._meta, "%s_allowed_methods" % request_type, None)
+
         if 'HTTP_X_HTTP_METHOD_OVERRIDE' in request.META:
             request.method = request.META['HTTP_X_HTTP_METHOD_OVERRIDE']
+
         request_method = self.method_check(request, allowed=allowed_methods)
         method = getattr(self, "%s_%s" % (request_method, request_type), None)
 
@@ -2129,7 +2131,15 @@ class ModelResource(Resource):
                 continue
 
             # Get the manager.
-            related_mngr = getattr(bundle.obj, field_object.attribute)
+            related_mngr = None
+
+            if isinstance(field_object.attribute, basestring):
+                related_mngr = getattr(bundle.obj, field_object.attribute)
+            elif callable(field_object.attribute):
+                related_mngr = field_object.attribute(bundle)
+
+            if not related_mngr:
+                continue
 
             # ManyToManyField with a through table don't have add method by default
             # If we don't have an add method, better to do nothing
