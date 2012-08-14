@@ -1274,6 +1274,15 @@ class Resource(object):
 
         return True
 
+    def check_fields(self, bundle):
+        """
+        Check if the data sent in a request popullated in bundle.data matches
+        fields in the Resource, otherwise raises an Exception.
+        """
+        for field in bundle.data.keys():
+            if field not in self.fields:
+                raise BadRequest("Invalid field passed %s" % field)
+
     def rollback(self, bundles):
         """
         Given the list of bundles, delete all objects pertaining to those
@@ -1359,6 +1368,7 @@ class Resource(object):
         deserialized = self.deserialize(request, body, format=request.META.get('CONTENT_TYPE', 'application/json'))
         deserialized = self.alter_deserialized_detail_data(request, deserialized)
         bundle = self.build_bundle(data=dict_strip_unicode_keys(deserialized), request=request)
+        self.check_fields(bundle)
         updated_bundle = self.obj_create(bundle, **self.remove_api_resource_names(kwargs))
         location = self.get_resource_uri(updated_bundle)
 
@@ -1453,6 +1463,7 @@ class Resource(object):
         deserialized = self.deserialize(request, body, format=request.META.get('CONTENT_TYPE', 'application/json'))
         deserialized = self.alter_deserialized_detail_data(request, deserialized)
         bundle = self.build_bundle(data=dict_strip_unicode_keys(deserialized), request=request)
+        self.check_fields(bundle)
 
         try:
             updated_bundle = self.obj_update(bundle=bundle, **self.remove_api_resource_names(kwargs))
