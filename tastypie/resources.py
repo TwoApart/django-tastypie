@@ -1331,6 +1331,7 @@ class Resource(six.with_metaclass(DeclarativeMetaclass)):
         deserialized = self.deserialize(request, request.body, format=request.META.get('CONTENT_TYPE', 'application/json'))
         deserialized = self.alter_deserialized_detail_data(request, deserialized)
         bundle = self.build_bundle(data=dict_strip_unicode_keys(deserialized), request=request)
+        self.check_fields(bundle)
         updated_bundle = self.obj_create(bundle, **self.remove_api_resource_names(kwargs))
         location = self.get_resource_uri(updated_bundle)
 
