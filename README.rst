@@ -1,15 +1,29 @@
 `dev` branch of this fork of django-tastypie includes all these pull requests:
 
-* <a href="https://github.com/toastdriven/django-tastypie/pull/525">GH-525</a> Speeding up PUTs and PATCHs
-* <a href="https://github.com/toastdriven/django-tastypie/pull/534">GH-534</a> (**merged**) Query terms are now a set in Django development
-* <a href="https://github.com/toastdriven/django-tastypie/pull/535">GH-535</a> Django dev JSONEncoder is now based on json
-* <a href="https://github.com/toastdriven/django-tastypie/pull/537">GH-537</a> Removing the Manager dependency in ToManyField.dehydrate()
-* <a href="https://github.com/toastdriven/django-tastypie/pull/547">GH-547</a> PATCH returning an HttpResponse
-* <a href="https://github.com/toastdriven/django-tastypie/pull/589">GH-589</a> Fixing partial PUTS on resources with m2m relations
-* <a href="https://github.com/toastdriven/django-tastypie/pull/593">GH-593</a> (**merged**) Support for X-HTTP-Method-Override
-* <a href="https://github.com/toastdriven/django-tastypie/pull/615">GH-615</a> Avoiding PUT/POST to rebound data
-* <a href="https://github.com/toastdriven/django-tastypie/pull/617">GH-617</a> Raise InvalidFilter on unlisted model field
-* <a href="https://github.com/toastdriven/django-tastypie/pull/624">GH-624</a> Raising an error when a PUT or POST includes an unlisted field
+* `GH-525`_ Speeding up PUTs and PATCHs
+* `GH-534`_ (**merged**) Query terms are now a set in Django development
+* `GH-535`_ Django dev JSONEncoder is now based on json
+* `GH-537`_ Removing the Manager dependency in ToManyField.dehydrate()
+* `GH-547`_ PATCH returning an HttpResponse
+* `GH-589`_ Fixing partial PUTS on resources with m2m relations
+* `GH-593`_ (**merged**) Support for X-HTTP-Method-Override
+* `GH-615`_ Avoiding PUT/POST to rebound data
+* `GH-617`_ Raise InvalidFilter on unlisted model field
+* `GH-624`_ Raising an error when a PUT or POST includes an unlisted field
+
+.. _`GH-525`: https://github.com/toastdriven/django-tastypie/pull/525
+.. _`GH-534`: https://github.com/toastdriven/django-tastypie/pull/534
+.. _`GH-535`: https://github.com/toastdriven/django-tastypie/pull/535
+.. _`GH-537`: https://github.com/toastdriven/django-tastypie/pull/537
+.. _`GH-547`: https://github.com/toastdriven/django-tastypie/pull/547
+.. _`GH-589`: https://github.com/toastdriven/django-tastypie/pull/589
+.. _`GH-593`: https://github.com/toastdriven/django-tastypie/pull/593
+.. _`GH-615`: https://github.com/toastdriven/django-tastypie/pull/615
+.. _`GH-617`: https://github.com/toastdriven/django-tastypie/pull/617
+.. _`GH-624`: https://github.com/toastdriven/django-tastypie/pull/624
+
+You can see updated differences between toastdriven/django-tastypie@master vs twoapart/django-tastypie@dev here:
+https://github.com/TwoApart/django-tastypie/compare/toastdriven:master...dev
 
 
 ===============
