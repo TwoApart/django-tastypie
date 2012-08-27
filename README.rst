@@ -22,7 +22,7 @@
 .. _`GH-617`: https://github.com/toastdriven/django-tastypie/pull/617
 .. _`GH-624`: https://github.com/toastdriven/django-tastypie/pull/624
 
-You can see updated differences between toastdriven/django-tastypie@master vs twoapart/django-tastypie@dev here:
+You can see updated differences between ``toastdriven/django-tastypie@master`` vs ``twoapart/django-tastypie@dev`` here:
 https://github.com/TwoApart/django-tastypie/compare/toastdriven:master...dev
 
 
