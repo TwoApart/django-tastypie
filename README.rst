@@ -1,3 +1,17 @@
+`dev` branch of this fork of django-tastypie includes all these pull requests:
+
+* <a href="https://github.com/toastdriven/django-tastypie/pull/525">GH-525</a> Speeding up PUTs and PATCHs
+* <a href="https://github.com/toastdriven/django-tastypie/pull/534">GH-534</a> (**merged**) Query terms are now a set in Django development
+* <a href="https://github.com/toastdriven/django-tastypie/pull/535">GH-535</a> Django dev JSONEncoder is now based on json
+* <a href="https://github.com/toastdriven/django-tastypie/pull/537">GH-537</a> Removing the Manager dependency in ToManyField.dehydrate()
+* <a href="https://github.com/toastdriven/django-tastypie/pull/547">GH-547</a> PATCH returning an HttpResponse
+* <a href="https://github.com/toastdriven/django-tastypie/pull/589">GH-589</a> Fixing partial PUTS on resources with m2m relations
+* <a href="https://github.com/toastdriven/django-tastypie/pull/593">GH-593</a> (**merged**) Support for X-HTTP-Method-Override
+* <a href="https://github.com/toastdriven/django-tastypie/pull/615">GH-615</a> Avoiding PUT/POST to rebound data
+* <a href="https://github.com/toastdriven/django-tastypie/pull/617">GH-617</a> Raise InvalidFilter on unlisted model field
+* <a href="https://github.com/toastdriven/django-tastypie/pull/624">GH-624</a> Raising an error when a PUT or POST includes an unlisted field
+
+
 ===============
 django-tastypie
 ===============
