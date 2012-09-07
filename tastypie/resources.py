@@ -1978,7 +1978,7 @@ class ModelResource(Resource):
             try:
                 bundle.obj = self.get_object_list(bundle.request).model()
                 bundle.data.update(kwargs)
-                bundle = self.full_hydrate(bundle)
+                bundle = self.medium_hydrate(bundle)
                 lookup_kwargs = kwargs.copy()
 
                 for key in kwargs.keys():
