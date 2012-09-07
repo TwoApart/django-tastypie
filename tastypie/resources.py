@@ -2100,11 +2100,6 @@ class ModelResource(Resource):
             if field_object.blank and not bundle.data.has_key(field_name):
                 continue
 
-            # Don't save things that are not dict-alike
-            # which means it's probably a uri
-            if not hasattr(bundle.data.get(field_name, None), 'items'):
-                continue
-
             # Get the object.
             try:
                 related_obj = getattr(bundle.obj, field_object.attribute)
@@ -2119,7 +2114,11 @@ class ModelResource(Resource):
 
                     setattr(related_obj, field_object.related_name, bundle.obj)
 
-                related_obj.save()
+                # If a `related_obj` is set as having `adding`
+                # True then that means the related_obj wasn't instantiated
+                # from an existing model, so we need to save it.
+                if related_obj._state.adding:
+                    related_obj.save()
                 setattr(bundle.obj, field_object.attribute, related_obj)
 
     def save_m2m(self, bundle):
