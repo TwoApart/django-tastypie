@@ -10,6 +10,8 @@
 * `GH-615`_ Avoiding PUT/POST to rebound data
 * `GH-617`_ Raise InvalidFilter on unlisted model field
 * `GH-624`_ Raising an error when a PUT or POST includes an unlisted field
+* `GH-658`_ (**merged**) Adding tests for obj_update with identifiers
+* `GH-659`_ Refactored obj_update with identifiers (Performance improvement)
 
 .. _`GH-525`: https://github.com/toastdriven/django-tastypie/pull/525
 .. _`GH-534`: https://github.com/toastdriven/django-tastypie/pull/534
@@ -21,6 +23,8 @@
 .. _`GH-615`: https://github.com/toastdriven/django-tastypie/pull/615
 .. _`GH-617`: https://github.com/toastdriven/django-tastypie/pull/617
 .. _`GH-624`: https://github.com/toastdriven/django-tastypie/pull/624
+.. _`GH-658`: https://github.com/toastdriven/django-tastypie/pull/658
+.. _`GH-659`: https://github.com/toastdriven/django-tastypie/pull/659
 
 You can see updated differences between ``toastdriven/django-tastypie@master`` vs ``twoapart/django-tastypie@dev`` here:
 https://github.com/TwoApart/django-tastypie/compare/toastdriven:master...dev
