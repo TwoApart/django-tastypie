@@ -2114,7 +2114,11 @@ class ModelResource(Resource):
 
                     setattr(related_obj, field_object.related_name, bundle.obj)
 
-                related_obj.save()
+                # If a `related_obj` is set as having `adding`
+                # True then that means the related_obj wasn't instantiated
+                # from an existing model, so we need to save it.
+                if related_obj._state.adding:
+                    related_obj.save()
                 setattr(bundle.obj, field_object.attribute, related_obj)
 
     def save_m2m(self, bundle):
@@ -2163,7 +2167,11 @@ class ModelResource(Resource):
                     related_objs = []
 
                     for related_bundle in bundle.data[field_name]:
-                        related_bundle.obj.save()
+                        # If a related bundle's `obj` is set as having `adding`
+                        # True then that means the obj wasn't instantiated
+                        # from an existing model, so we need to save it.
+                        if related_bundle.obj._state.adding:
+                            related_bundle.obj.save()
                         related_objs.append(related_bundle.obj)
 
                     related_mngr.add(*related_objs)
