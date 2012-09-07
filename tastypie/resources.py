@@ -1993,7 +1993,12 @@ class ModelResource(Resource):
 
                 lookup_kwargs = {}
                 for identifier in kwargs:
+                    if identifier == self._meta.detail_uri_name:
+                        lookup_kwargs[identifier] = kwargs[identifier]
+                        continue
+
                     field_object = self.fields[identifier]
+
                     if field_object.readonly is True:
                         continue
 
@@ -2001,8 +2006,9 @@ class ModelResource(Resource):
                     method = getattr(self, "hydrate_%s" % identifier, None)
                     if method:
                         bundle = method(bundle)
+                    if field_object.attribute:
+                        value = field_object.hydrate(bundle)
 
-                    value = bundle.data[identifier]
                     lookup_kwargs[identifier] = value
             except:
                 # if there is trouble hydrating the data, fall back to just
