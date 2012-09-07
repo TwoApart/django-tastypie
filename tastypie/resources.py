@@ -1746,17 +1746,14 @@ class ModelResource(Resource):
 
         qs_filters = {}
 
-        if django.get_version() >= '1.5':
-            if hasattr(self._meta, 'queryset'):
-                # Get the possible query terms from the current QuerySet.
-                query_terms = self._meta.queryset.query.query_terms
-            else:
-                query_terms = QUERY_TERMS
-        else:
-            if hasattr(self._meta, 'queryset'):
+        if hasattr(self._meta, 'queryset'):
+            # Get the possible query terms from the current QuerySet.
+            if hasattr(self._meta.queryset.query.query_terms, 'keys'):
+                # Django 1.4 & below compatibility.
                 query_terms = self._meta.queryset.query.query_terms.keys()
             else:
-                query_terms = QUERY_TERMS.keys()
+                # Django 1.5+.
+                query_terms = self._meta.queryset.query.query_terms
 
         model_fields = map(lambda x:x.name, self._meta.queryset.model._meta.fields)
 
