@@ -1793,8 +1793,6 @@ class ModelResourceTestCase(TestCase):
         data = json.loads(resp.content)
         self.assertEqual(data['username'], "MARAUJOP")
 
-<<<<<<< HEAD
-=======
         request = MockRequest()
         request.GET = {'format': 'json'}
         request.method = 'PUT'
@@ -1807,7 +1805,6 @@ class ModelResourceTestCase(TestCase):
         self.assertEqual(data['date'], "2012-09-07T00:00:00")
         self.assertEqual(data['username'], "DIFFERENT")
 
->>>>>>> tests/obj_update_identifiers
     def test_post_list(self):
         self.assertEqual(Note.objects.count(), 6)
         resource = NoteResource()
