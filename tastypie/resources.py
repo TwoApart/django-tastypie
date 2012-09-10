@@ -1929,7 +1929,7 @@ class ModelResource(Resource):
         self.save_related(bundle)
 
         # Save parent
-        self.obj_save(bundle)
+        bundle.obj = self.obj_save(bundle.obj)
 
         # Now pick up the M2M bits.
         m2m_bundle = self.hydrate_m2m(bundle)
@@ -2031,7 +2031,7 @@ class ModelResource(Resource):
         self.save_related(bundle)
 
         # Save the main object.
-        self.obj_save(bundle)
+        bundle.obj = self.obj_save(bundle.obj)
 
         # Now pick up the M2M bits.
         m2m_bundle = self.hydrate_m2m(bundle)
@@ -2092,10 +2092,9 @@ class ModelResource(Resource):
             if bundle.obj and self.get_bundle_detail_data(bundle):
                 bundle.obj.delete()
 
-    def obj_save(self, bundle):
+    def obj_save(self, obj):
         """
         """
-        obj = bundle.obj
         try:
             obj.save()
         except IntegrityError as iEr:
@@ -2125,7 +2124,7 @@ class ModelResource(Resource):
 
             obj = res_obj
 
-        bundle.obj = obj
+        return obj
 
     def save_related(self, bundle):
         """
@@ -2170,7 +2169,7 @@ class ModelResource(Resource):
                 # True then that means the related_obj wasn't instantiated
                 # from an existing model, so we need to save it.
                 if related_obj._state.adding:
-                    related_obj.save()
+                    related_obj = self.obj_save(related_obj)
                 setattr(bundle.obj, field_object.attribute, related_obj)
 
     def save_m2m(self, bundle):
@@ -2223,7 +2222,7 @@ class ModelResource(Resource):
                         # True then that means the obj wasn't instantiated
                         # from an existing model, so we need to save it.
                         if related_bundle.obj._state.adding:
-                            related_bundle.obj.save()
+                            related_bundle.obj = self.obj_save(related_bundle.obj)
                         related_objs.append(related_bundle.obj)
 
                     related_mngr.add(*related_objs)
