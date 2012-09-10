@@ -1929,7 +1929,7 @@ class ModelResource(Resource):
         self.save_related(bundle)
 
         # Save parent
-        bundle.obj.save()
+        self.obj_save(bundle)
 
         # Now pick up the M2M bits.
         m2m_bundle = self.hydrate_m2m(bundle)
@@ -2031,7 +2031,7 @@ class ModelResource(Resource):
         self.save_related(bundle)
 
         # Save the main object.
-        bundle.obj.save()
+        self.obj_save(bundle)
 
         # Now pick up the M2M bits.
         m2m_bundle = self.hydrate_m2m(bundle)
@@ -2091,6 +2091,41 @@ class ModelResource(Resource):
         for bundle in bundles:
             if bundle.obj and self.get_bundle_detail_data(bundle):
                 bundle.obj.delete()
+
+    def obj_save(self, bundle):
+        """
+        """
+        obj = bundle.obj
+        try:
+            obj.save()
+        except IntegrityError as iEr:
+            # if there is an Integrity Exception
+            # we look for an idempotent model
+            queries = {}
+            for field in obj._meta.local_fields:
+                if field.auto_created and field.primary_key:
+                    continue
+
+                field_name = field.attname
+                field_value = getattr(obj, field_name, None)
+
+                # if a non-nullable field is null stop lookup
+                # and raise error
+                if field_value is None and not field.null:
+                    raise iEr
+
+                queries[field_name] = field_value
+
+            try:
+                res_obj = obj.__class__.objects.get(**queries)
+            except Exception:
+                # no matter what kind of error is triggered
+                # we raise previous integrity error
+                raise iEr
+
+            obj = res_obj
+
+        bundle.obj = obj
 
     def save_related(self, bundle):
         """
