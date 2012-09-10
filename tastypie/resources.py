@@ -2123,6 +2123,7 @@ class BaseModelResource(Resource):
 
             field_object = self.fields[identifier]
 
+
             # Skip readonly or related fields.
             if field_object.readonly is True or getattr(field_object, 'is_related', False):
                 continue
