@@ -6,7 +6,7 @@ from django.conf import settings
 from django.conf.urls.defaults import patterns, url
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned, ValidationError
 from django.core.urlresolvers import NoReverseMatch, reverse, resolve, Resolver404, get_script_prefix
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.db.models.sql.constants import QUERY_TERMS, LOOKUP_SEP
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.utils.cache import patch_cache_control, patch_vary_headers
@@ -1943,7 +1943,7 @@ class ModelResource(Resource):
         self.save_related(bundle)
 
         # Save parent
-        bundle.obj.save()
+        bundle.obj = self.obj_save(bundle.obj)
 
         # Now pick up the M2M bits.
         m2m_bundle = self.hydrate_m2m(bundle)
@@ -2060,7 +2060,7 @@ class ModelResource(Resource):
         self.save_related(bundle)
 
         # Save the main object.
-        bundle.obj.save()
+        bundle.obj = self.obj_save(bundle.obj)
 
         # Now pick up the M2M bits.
         m2m_bundle = self.hydrate_m2m(bundle)
@@ -2121,6 +2121,40 @@ class ModelResource(Resource):
             if bundle.obj and self.get_bundle_detail_data(bundle):
                 bundle.obj.delete()
 
+    def obj_save(self, obj):
+        """
+        """
+        try:
+            obj.save()
+        except IntegrityError as iEr:
+            # if there is an Integrity Exception
+            # we look for an idempotent model
+            queries = {}
+            for field in obj._meta.local_fields:
+                if field.auto_created and field.primary_key:
+                    continue
+
+                field_name = field.attname
+                field_value = getattr(obj, field_name, None)
+
+                # if a non-nullable field is null stop lookup
+                # and raise error
+                if field_value is None and not field.null:
+                    raise iEr
+
+                queries[field_name] = field_value
+
+            try:
+                res_obj = obj.__class__.objects.get(**queries)
+            except Exception:
+                # no matter what kind of error is triggered
+                # we raise previous integrity error
+                raise iEr
+
+            obj = res_obj
+
+        return obj
+
     def save_related(self, bundle):
         """
         Handles the saving of related non-M2M data.
@@ -2164,7 +2198,7 @@ class ModelResource(Resource):
                 # True then that means the related_obj wasn't instantiated
                 # from an existing model, so we need to save it.
                 if related_obj._state.adding:
-                    related_obj.save()
+                    related_obj = self.obj_save(related_obj)
                 setattr(bundle.obj, field_object.attribute, related_obj)
 
     def save_m2m(self, bundle):
@@ -2217,7 +2251,7 @@ class ModelResource(Resource):
                         # True then that means the obj wasn't instantiated
                         # from an existing model, so we need to save it.
                         if related_bundle.obj._state.adding:
-                            related_bundle.obj.save()
+                            related_bundle.obj = self.obj_save(related_bundle.obj)
                         related_objs.append(related_bundle.obj)
 
                     related_mngr.add(*related_objs)
