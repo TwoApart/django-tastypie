@@ -6,7 +6,7 @@ from django.conf import settings
 from django.conf.urls.defaults import patterns, url
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned, ValidationError
 from django.core.urlresolvers import NoReverseMatch, reverse, resolve, Resolver404, get_script_prefix
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.db.models.sql.constants import QUERY_TERMS, LOOKUP_SEP
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.utils.cache import patch_cache_control
@@ -2094,10 +2094,17 @@ class ModelResource(Resource):
 
     def obj_save(self, obj):
         """
+        Saves the object and in case it raises an Error tries to handle it.
+        In case an Integrity Error is raised we try to look for an exact match
+        of the model that was being saved in the DB. 
+        We assume that Integrity Error came from a data violation on some field(s)
+        with `unique=True` or `unique_together` restriction and try to lookup for
+        elements that are exactly the same to the one being saved. If so, we assume
+        they both are the same model and retrieve the existing model.
         """
         try:
             obj.save()
-        except IntegrityError as iEr:
+        except IntegrityError as integrity_error:
             # if there is an Integrity Exception
             # we look for an idempotent model
             queries = {}
@@ -2109,18 +2116,19 @@ class ModelResource(Resource):
                 field_value = getattr(obj, field_name, None)
 
                 # if a non-nullable field is null stop lookup
-                # and raise error
+                # the previous integrity_error is nothing
+                # we can control
                 if field_value is None and not field.null:
-                    raise iEr
+                    raise integrity_error
 
                 queries[field_name] = field_value
 
             try:
                 res_obj = obj.__class__.objects.get(**queries)
-            except Exception:
+            except:
                 # no matter what kind of error is triggered
                 # we raise previous integrity error
-                raise iEr
+                raise integrity_error
 
             obj = res_obj
 
