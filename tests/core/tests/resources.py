@@ -27,8 +27,8 @@ from tastypie.paginator import Paginator
 from tastypie.resources import Resource, ModelResource, ALL, ALL_WITH_RELATIONS, convert_post_to_put, convert_post_to_patch
 from tastypie.serializers import Serializer
 from tastypie.throttle import CacheThrottle
-from tastypie.utils import aware_datetime, make_naive, now
-from tastypie.validation import FormValidation, Validation
+from tastypie.utils import aware_datetime, make_naive
+from tastypie.validation import FormValidation
 from core.models import Note, NoteWithEditor, Subject, MediaBit, AutoNowNote, DateRecord, Counter
 
 from core.tests.mocks import MockRequest
@@ -2501,7 +2501,7 @@ class ModelResourceTestCase(TestCase):
         setattr(
             request,
             self.body_attr,
-            '{"content": "The cat is back. The dog coughed him up out back.", "created": "2010-04-03 20:05:00", "is_active": true, "slug": "cat-is-back", "title": "The Cat Is Back", "updated": "2010-04-03 20:05:00", "author": null}'
+            '{"content": "The cat is back. The dog coughed him up out back.", "created": "2010-04-03 20:05:00", "is_active": true, "slug": "cat-is-back", "title": "The Cat Is Back", "author": null}'
         )
 
         resp = nullable_resource.put_detail(request, pk=10)
@@ -3787,9 +3787,9 @@ class ModelResourceTestCase(TestCase):
         bundle_3 = Bundle(data={
             'author': '/api/v1/users/1/',
         })
-        hydrated3 = nrrnr.obj_create(bundle_2)
-        self.assertEqual(hydrated2.obj.author.username, u'johndoe')
-        self.assertEqual(hydrated2.obj.subjects.count(), 0)
+        hydrated3 = nrrnr.obj_create(bundle_3)
+        self.assertEqual(hydrated3.obj.author.username, u'johndoe')
+        self.assertEqual(hydrated3.obj.subjects.count(), 0)
 
     def test_per_user_authorization(self):
         from django.contrib.auth.models import AnonymousUser, User

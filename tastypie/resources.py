@@ -1951,7 +1951,7 @@ class BaseModelResource(Resource):
 
         model_fields = map(lambda x:x.name, self._meta.queryset.model._meta.fields)
 
-        model_fields = map(lambda x:x.name, self._meta.queryset.model._meta.fields)
+        model_fields = map(lambda x:x.name, self._meta.queryset.model._meta.fields) if self._meta.queryset else []
 
         for filter_expr, value in filters.items():
             filter_bits = filter_expr.split(LOOKUP_SEP)
@@ -2257,7 +2257,7 @@ class BaseModelResource(Resource):
         self.is_valid(bundle)
 
         if bundle.errors and not skip_errors:
-            self.error_response(bundle.errors, request)
+            self.error_response(bundle.request, bundle.errors)
 
         return self.save(bundle, skip_errors=skip_errors)
 
@@ -2463,7 +2463,7 @@ class BaseModelResource(Resource):
 
                 related_objs = []
 
-                if field_name in bundle.data:
+                if field_name not in bundle.data:
                     continue
 
                 for related_bundle in bundle.data[field_name]:
