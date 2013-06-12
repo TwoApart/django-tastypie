@@ -2413,7 +2413,9 @@ class BaseModelResource(Resource):
                         request=bundle.request,
                         objects_saved=bundle.objects_saved
                     )
-                    related_resource.save(related_bundle)
+                    related_bundle = related_resource.save(related_bundle)
+                    related_obj = related_bundle.obj
+
 
                 setattr(bundle.obj, field_object.attribute, related_obj)
 
