@@ -191,6 +191,7 @@ class ApiKeyAuthentication(Authentication):
             return self._unauthorized()
 
         try:
+            from tastypie.compat import User, username_field
             lookup_kwargs = {username_field: username}
             user = User.objects.get(**lookup_kwargs)
         except (User.DoesNotExist, User.MultipleObjectsReturned):
