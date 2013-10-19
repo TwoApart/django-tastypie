@@ -11,7 +11,7 @@ from django.middleware.csrf import _sanitize_token, constant_time_compare
 from django.utils.http import same_origin
 from django.utils.translation import ugettext as _
 from tastypie.http import HttpUnauthorized
-from tastypie.compat import User, username_field
+from tastypie.compat import User
 
 try:
     from hashlib import sha1
@@ -180,7 +180,7 @@ class ApiKeyAuthentication(Authentication):
         Should return either ``True`` if allowed, ``False`` if not or an
         ``HttpResponse`` if you need something custom.
         """
-        from tastypie.compat import User
+        from tastypie.compat import User, username_field
 
         try:
             username, api_key = self.extract_credentials(request)
@@ -281,6 +281,7 @@ class SessionAuthentication(Authentication):
 
         This implementation returns the user's username.
         """
+        from tastypie.compat import username_field
         return getattr(request.user, username_field)
 
 
@@ -367,6 +368,7 @@ class DigestAuthentication(Authentication):
         return True
 
     def get_user(self, username):
+        from tastypie.compat import username_field
         try:
             lookup_kwargs = {username_field: username}
             user = User.objects.get(**lookup_kwargs)
