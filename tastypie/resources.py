@@ -1949,8 +1949,6 @@ class BaseModelResource(Resource):
         else:
             query_terms = QUERY_TERMS
 
-        model_fields = map(lambda x:x.name, self._meta.queryset.model._meta.fields)
-
         model_fields = map(lambda x:x.name, self._meta.queryset.model._meta.fields) if self._meta.queryset else []
 
         for filter_expr, value in filters.items():
